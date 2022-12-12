@@ -24,7 +24,7 @@ public class DetectPlayer : MonoBehaviour
     {
         if (hitInfo.gameObject.CompareTag("Player"))
         {
-            enemy.AttackPlayer();
+            enemy.isPatroling = false;
         }
     }
 }

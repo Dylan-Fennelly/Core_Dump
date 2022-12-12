@@ -9,18 +9,21 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if(Time.timeScale != 0)
         {
-            timer = Time.time;
-        }
+            if (Input.GetButtonDown("Fire1"))
+            {
+                timer = Time.time;
+            }
 
-        if (Input.GetButtonUp("Fire1")&&(Time.time - timer)<.5)
-        {
-            ShootSmall();
-        }
-        else if (Input.GetButtonUp("Fire1") && (Time.time - timer) > .5)
-        {
-            ShootBig();
+            if (Input.GetButtonUp("Fire1") && (Time.time - timer) < .5)
+            {
+                ShootSmall();
+            }
+            else if (Input.GetButtonUp("Fire1") && (Time.time - timer) > .5)
+            {
+                ShootBig();
+            }
         }
     }
 
