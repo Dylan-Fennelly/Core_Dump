@@ -3,12 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class characterMovement : MonoBehaviour
 {
     // private Animator anim;
     public GameObject playerDeathEffect;
     public CapsuleCollider2D playerCollider;
+    public int numofHearts;
+    public Image[] hearts;
+    public Sprite fullHeart;
+    public Sprite EmptyHeart;
+    
     public int health = 100;
     public float speed = 12f;
     public int jumpHeight =19;
@@ -32,6 +38,7 @@ public class characterMovement : MonoBehaviour
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
     private SpriteRenderer spriteRend;
+    
 
     void Awake()
     {
@@ -76,6 +83,30 @@ public class characterMovement : MonoBehaviour
 
     void Update()
     {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (health > numofHearts)
+            {
+                health = numofHearts;
+            }
+            if (i < numofHearts)
+            {
+                hearts[i].sprite = fullHeart;
+            }
+            else
+            {
+                hearts[i].sprite = EmptyHeart;
+            }
+
+            if (i < numofHearts)
+            {
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
+        }
         
         if (playerIsDead &&(Time.realtimeSinceStartup - deathTimer) > 3)
         {
