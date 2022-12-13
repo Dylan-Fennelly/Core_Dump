@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  damageAmount: 30
+  damageAmount: 20
   body: {fileID: 6022324589481890655}
   deathEffect: {fileID: 7195606237888896708, guid: c2d31084432bbe04d9b354dbb5b118fa, type: 3}
   leftCheckPoint: {fileID: 0}

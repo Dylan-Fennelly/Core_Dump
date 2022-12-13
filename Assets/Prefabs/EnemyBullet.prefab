@@ -256,7 +256,7 @@ MonoBehaviour:
   bulletType: {fileID: 5625066110016343594}
   hit: {fileID: 6631798368931233449}
   beam: {fileID: 242926876343077700}
-  damageAmount: 20
+  damageAmount: 10
 --- !u!82 &6631798368931233449
 AudioSource:
   m_ObjectHideFlags: 0
