@@ -10,6 +10,7 @@ TagManager:
   - SmallBullet
   - BigBullet
   - EnemyDetector
+  - Turret
   layers:
   - Default
   - TransparentFX

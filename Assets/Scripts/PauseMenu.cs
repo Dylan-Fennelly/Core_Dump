@@ -2,41 +2,42 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Time = UnityEngine.Time;
 
 public class PauseMenu : MonoBehaviour
 {
-    // Reference to the pause menu
+
     public GameObject pauseMenu;
 
-    // Reference to the button that will resume gameplay
-    public Button resumeButton;
 
-    // This method will be called when the pause menu is opened
+    public Button resumeButton;
+    public Button restartButton;
+
+
     public void PauseGame()
     {
-        // Pause the game
         Time.timeScale = 0;
-
-        // Enable the pause menu
         pauseMenu.SetActive(true);
     }
-
-    // This method will be called when the resume button is clicked
     public void ResumeGame()
     {
-        // Unpause the game
         Time.timeScale = 1;
-
-        // Disable the pause menu
+        
         pauseMenu.SetActive(false);
     }
 
-    private void Start()
+    public void ResetGame()
     {
-        // Set the button's onClick event to call the ResumeGame method
+        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
+    }
+
+    private void Start()
+    { 
         resumeButton.onClick.AddListener(ResumeGame);
+        restartButton.onClick.AddListener(ResetGame);
         
     }
 

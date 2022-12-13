@@ -3,22 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class Enemy : MonoBehaviour
+public class Turret : MonoBehaviour
 {
+    
     public int health = 100;
-    public int damageAmount;
-    public Rigidbody2D body;
+    [SerializeField] private int damageAmount;
     public GameObject deathEffect;
-    public GameObject leftCheckPoint;
-    public GameObject rightCheckPoint;
     public GameObject Player;
-    public bool isPatroling = true;
-    private bool movingRight;
+    public GameObject firePoint;
+    public GameObject bullet;
+    public float minTimeBetweenShots = 1f;
+    public float maxTimeBetweenShots = 3f;
+    private bool aimingRight;
     private bool facingRight;
-    public int knockBackDistance = 10;
-    public int knockBackHeight = 5;
-    public int speed = 75;
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
@@ -28,74 +27,42 @@ public class Enemy : MonoBehaviour
 
     void Awake()
     {
-        body.GetComponent<Rigidbody2D>();
+        firePoint.GetComponent<GameObject>();
+        bullet.GetComponent<GameObject>();
         deathEffect.GetComponent<GameObject>();
-        leftCheckPoint.GetComponent<GameObject>();
-        rightCheckPoint.GetComponent<GameObject>();
         Player.GetComponent<GameObject>();
         spriteRend = GetComponent<SpriteRenderer>();
 
     }
 
+    void Start()
+    {
+        StartCoroutine(ShootBullet());
+    }
+
      void FixedUpdate()
     {
-        if (isPatroling)
-        {
-            if (transform.position.x > rightCheckPoint.transform.position.x)
-            {
-                movingRight = false;
-            }
-            if (transform.position.x < leftCheckPoint.transform.position.x)
-            {
-                movingRight = true;
-            }
-        
-            if (movingRight)
-            {
-                if (facingRight)
-                {
-                    Flip();
-                }
-                MoveRight();
-            }
-            else
-            {
-                if (!facingRight)
-                {
-                    Flip();
-                }
-                MoveLeft();
-            }
-             
-        }
-        else
-        {
-            AttackPlayer();
-        }
-        
+        AttackPlayer();
         
     }
 
      public void AttackPlayer()
      {
-         isPatroling = false;
-         speed = 100;
          if (transform.position.x > Player.transform.position.x)
          {
-             movingRight = false;
+             aimingRight = false;
          }
          if (transform.position.x < Player.transform.position.x)
          {
-             movingRight = true;
+             aimingRight = true;
          }
      
-         if (movingRight)
+         if (aimingRight)
          {
              if (facingRight)
              {
                  Flip();
              }
-             MoveRight();
          }
          else
          {
@@ -103,7 +70,6 @@ public class Enemy : MonoBehaviour
              {
                  Flip();
              }
-             MoveLeft();
          }
      }
 
@@ -111,7 +77,6 @@ public class Enemy : MonoBehaviour
      public void TakeDamage(int damage)
     {
         health -= damage;
-        AttackPlayer();
         StartCoroutine(Invunerability());
         if (health <= 0)
         {
@@ -124,21 +89,10 @@ public class Enemy : MonoBehaviour
         Instantiate(deathEffect,transform.position,quaternion.identity);
         Destroy(gameObject);
     }
-
-    public void KnockBack(Vector2 direction)
+    void Flip()
     {
-        Vector2 knockDirection = ((Vector2)transform.position - direction).normalized;
-        body.velocity = ((knockDirection * knockBackDistance) + Vector2.up * knockBackHeight);
-    }
-
-    private void MoveRight()
-    {
-        body.AddForce(Vector2.right * speed);
-
-    }
-    private void MoveLeft()
-    {
-        body.AddForce(Vector2.left * speed);
+        facingRight = !facingRight;
+        transform.Rotate(0f,180f,0f);
     }
     private void  OnCollisionEnter2D(Collision2D other)
     {
@@ -147,13 +101,7 @@ public class Enemy : MonoBehaviour
             characterMovement player = other.gameObject.GetComponent<characterMovement>();
             player.KnockBack(gameObject.transform.position);
             player.TakeDamage(damageAmount);
-            AttackPlayer();
         }
-    }
-    void Flip()
-    {
-        facingRight = !facingRight;
-        transform.Rotate(0f,180f,0f);
     }
 
     private IEnumerator Invunerability()
@@ -167,6 +115,15 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
         }
         Physics2D.IgnoreLayerCollision(7, 8, false);
+    }
+
+    private IEnumerator ShootBullet()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(minTimeBetweenShots, maxTimeBetweenShots));
+            Instantiate(bullet, firePoint.transform.position, firePoint.transform.rotation);
+        }
     }
     
 }

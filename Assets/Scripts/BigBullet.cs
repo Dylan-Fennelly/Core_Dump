@@ -21,11 +21,19 @@ public class BigBullet : MonoBehaviour
         {
             Door door = hitInfo.GetComponent<Door>();
             door.OpenDoor();
+            Destroy((gameObject));
         }
 
         if (hitInfo.gameObject.CompareTag("Enemy"))
         {
             Enemy enemy = hitInfo.GetComponent<Enemy>();
+            enemy.TakeDamage(damage);
+            enemy.KnockBack(gameObject.transform.position);
+            Destroy(gameObject);
+        }
+        if (hitInfo.gameObject.CompareTag("Turret"))
+        {
+            Turret enemy = hitInfo.GetComponent<Turret>();
             enemy.TakeDamage(damage);
             Destroy(gameObject);
         }

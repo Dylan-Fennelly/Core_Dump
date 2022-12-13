@@ -31,6 +31,12 @@ public class Bullet : MonoBehaviour
             enemy.KnockBack(gameObject.transform.position);
             Destroy(gameObject);
         }
+        if (hitInfo.gameObject.CompareTag("Turret"))
+        {
+            Turret enemy = hitInfo.GetComponent<Turret>();
+            enemy.TakeDamage(damage);
+            Destroy(gameObject);
+        }
 
         if (hitInfo.gameObject.CompareTag("BigBullet"))
         {

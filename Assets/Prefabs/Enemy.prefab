@@ -228,15 +228,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  damageAmount: 30
   body: {fileID: 6022324589481890655}
+  deathEffect: {fileID: 7195606237888896708, guid: c2d31084432bbe04d9b354dbb5b118fa, type: 3}
   leftCheckPoint: {fileID: 0}
   rightCheckPoint: {fileID: 0}
   Player: {fileID: 0}
   isPatroling: 1
-  movingRight: 0
-  facingRight: 0
-  knockBackDistance: 3
-  knockBackHeight: 5
+  knockBackDistance: 30
+  knockBackHeight: 52
   speed: 75
   iFramesDuration: 2
   numberOfFlashes: 3
