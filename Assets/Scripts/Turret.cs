@@ -18,6 +18,7 @@ public class Turret : MonoBehaviour
     public float maxTimeBetweenShots = 3f;
     private bool aimingRight;
     private bool facingRight;
+    public AudioSource death;
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
@@ -86,6 +87,7 @@ public class Turret : MonoBehaviour
 
     void Die()
     {
+        death.Play();
         Instantiate(deathEffect,transform.position,quaternion.identity);
         Destroy(gameObject);
     }

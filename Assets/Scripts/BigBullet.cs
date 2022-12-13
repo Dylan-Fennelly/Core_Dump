@@ -8,6 +8,8 @@ public class BigBullet : MonoBehaviour
     public float speed = 10f;
     public int damage = 50;
     public Rigidbody2D rb;
+    public AudioSource hit;
+
     public GameObject bulletType;
     void Start()
     {
@@ -21,6 +23,7 @@ public class BigBullet : MonoBehaviour
         {
             Door door = hitInfo.GetComponent<Door>();
             door.OpenDoor();
+            hit.Play();
             Destroy((gameObject));
         }
 
@@ -29,12 +32,14 @@ public class BigBullet : MonoBehaviour
             Enemy enemy = hitInfo.GetComponent<Enemy>();
             enemy.TakeDamage(damage);
             enemy.KnockBack(gameObject.transform.position);
+            hit.Play();
             Destroy(gameObject);
         }
         if (hitInfo.gameObject.CompareTag("Turret"))
         {
             Turret enemy = hitInfo.GetComponent<Turret>();
-            enemy.TakeDamage(damage);
+            enemy.TakeDamage(damage);           
+            hit.Play();
             Destroy(gameObject);
         }
     }

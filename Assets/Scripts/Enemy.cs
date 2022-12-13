@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     public int knockBackDistance = 10;
     public int knockBackHeight = 5;
     public int speed = 75;
+    public AudioSource death;
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
@@ -119,8 +120,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Die()
+    public void Die()
     {
+        death.Play();
         Instantiate(deathEffect,transform.position,quaternion.identity);
         Destroy(gameObject);
     }

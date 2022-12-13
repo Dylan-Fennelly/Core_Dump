@@ -10,12 +10,11 @@ public class characterMovement : MonoBehaviour
     // private Animator anim;
     public GameObject playerDeathEffect;
     public CapsuleCollider2D playerCollider;
-    public int numofHearts;
-    public Image[] hearts;
     public Sprite fullHeart;
     public Sprite EmptyHeart;
-    
+    public Image[] healthBar;
     public int health = 100;
+    public AudioSource death;
     public float speed = 12f;
     public int jumpHeight =19;
     public int knockBackDistance = 10;
@@ -25,15 +24,6 @@ public class characterMovement : MonoBehaviour
     private Rigidbody2D body;
     public bool grounded;
     private float deathTimer;
-    
-    [Header("Dash")]
-    private bool canDash;
-    private bool isDashing;
-    private float dashingPower = 24f;
-    private float dashingTime = 0.2f;
-    private float dashingCoolDown = 1f;
-    
-
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
@@ -42,6 +32,10 @@ public class characterMovement : MonoBehaviour
 
     void Awake()
     {
+        for (int i = 0; i < healthBar.Length; i++)
+        {
+            healthBar[i].sprite = fullHeart;
+        }
         playerDeathEffect.GetComponent<GameObject>();
         playerCollider.GetComponent<Collider>();
         body = GetComponent<Rigidbody2D>();
@@ -51,16 +45,9 @@ public class characterMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (isDashing)
-        {
-            return;
-        }
+
         if (!playerIsDead)
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
-            {
-                StartCoroutine(Dash());
-            }
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             body.AddForce(new Vector2(Input.GetAxis("Horizontal") * speed, body.velocity.y));
             if (horizontalInput > 0 && facingRight)
@@ -83,31 +70,56 @@ public class characterMovement : MonoBehaviour
 
     void Update()
     {
-        for (int i = 0; i < hearts.Length; i++)
+        switch (health)
         {
-            if (health > numofHearts)
+            case 100:
             {
-                health = numofHearts;
-            }
-            if (i < numofHearts)
-            {
-                hearts[i].sprite = fullHeart;
-            }
-            else
-            {
-                hearts[i].sprite = EmptyHeart;
-            }
+                for (int i = 0; i < healthBar.Length; i++)
+                {
+                    healthBar[i].sprite = fullHeart;
+                }
 
-            if (i < numofHearts)
-            {
-                hearts[i].enabled = true;
+                break;
             }
-            else
+            case >= 80:
+                healthBar[0].sprite = fullHeart;
+                healthBar[1].sprite = fullHeart;
+                healthBar[2].sprite = fullHeart;
+                healthBar[3].sprite = fullHeart;
+                healthBar[4].sprite = EmptyHeart;
+                break;
+            case >= 60:
+                healthBar[0].sprite = fullHeart;
+                healthBar[1].sprite = fullHeart;
+                healthBar[2].sprite = fullHeart;
+                healthBar[3].sprite = EmptyHeart;
+                healthBar[4].sprite = EmptyHeart;
+                break;
+            case >= 40:
+                healthBar[0].sprite = fullHeart;
+                healthBar[1].sprite = fullHeart;
+                healthBar[2].sprite = EmptyHeart;
+                healthBar[3].sprite = EmptyHeart;
+                healthBar[4].sprite = EmptyHeart;
+                break;
+            case >= 20:
+                healthBar[0].sprite = fullHeart;
+                healthBar[1].sprite = EmptyHeart;
+                healthBar[2].sprite = EmptyHeart;
+                healthBar[3].sprite = EmptyHeart;
+                healthBar[4].sprite = EmptyHeart;
+                break;
+            default:
             {
-                hearts[i].enabled = false;
+                for (int i = 0; i < healthBar.Length; i++)
+                {
+                    healthBar[i].sprite = fullHeart;
+                }
+
+                break;
             }
         }
-        
+
         if (playerIsDead &&(Time.realtimeSinceStartup - deathTimer) > 3)
         {
             SceneManager.LoadScene(0);
@@ -140,9 +152,10 @@ public class characterMovement : MonoBehaviour
             Die();
         }
     }
-    void Die()
+    public void Die()
     {
         if (playerIsDead) return;
+        death.Play();
         Instantiate(playerDeathEffect, transform.position, Quaternion.identity);
         playerIsDead = true;
         spriteRend.enabled = false;
@@ -171,17 +184,5 @@ public class characterMovement : MonoBehaviour
         }
         Physics2D.IgnoreLayerCollision(7, 8, false);
     }
-    private IEnumerator Dash()
-    {
-        canDash = false;
-        isDashing = true;
-        float originalGravity = body.gravityScale;
-        body.gravityScale = 0f;
-        body.AddForce(new Vector2(transform.localScale.x * dashingPower, 0f),ForceMode2D.Impulse);
-        yield return new WaitForSeconds(dashingTime);
-        body.gravityScale = originalGravity;
-        isDashing = false;
-        yield return new WaitForSeconds(dashingCoolDown);
-        canDash = true;
-    }
+    
 }

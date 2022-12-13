@@ -9,11 +9,14 @@ public class EnemyBullet : MonoBehaviour
     public int damage = 20;
     public Rigidbody2D rb;
     public GameObject bulletType;
-    public int damageAmount;
+    public AudioSource hit;
+    public AudioSource beam;
+    public int damageAmount = 10;
 
     void Start()
     {
         rb.velocity = transform.right * speed;
+        beam.Play();
         Destroy(gameObject,4f);
     }
 
@@ -22,16 +25,27 @@ public class EnemyBullet : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             characterMovement player = other.gameObject.GetComponent<characterMovement>();
-            player.KnockBack(gameObject.transform.position);
             player.TakeDamage(damageAmount);
+            player.KnockBack(gameObject.transform.position);
+            hit.Play();
+
+            Destroy(gameObject);
         }
         if(other.gameObject.CompareTag("Door"))
         {
+            hit.Play();
             Destroy(gameObject);
         }
+        if(other.gameObject.CompareTag("Ground"))
+        {
+            hit.Play();
+            Destroy(gameObject);
+        }
+        
 
         if (other.gameObject.CompareTag("BigBullet"))
         {
+            hit.Play();
             Destroy(other.gameObject);
         }
         
